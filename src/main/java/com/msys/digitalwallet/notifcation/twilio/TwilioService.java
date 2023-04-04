@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 public class TwilioService implements TwilioClient {
@@ -37,7 +38,7 @@ public class TwilioService implements TwilioClient {
 
     public String sendOTP( String identifier, Channel channel ) {
 
-        Twilio.init(accountSId,authToken);
+        intiateTwilioProcess();
         Verification verification = Verification.creator(
                         serviceSid, // this is your verification sid
                         identifier, //this is your Twilio verified recipient phone number
@@ -50,7 +51,6 @@ public class TwilioService implements TwilioClient {
     @Override
     public String sendNotification(Notification notification) {
         String response;
-        System.out.println("Twilio service");
         if(notification.getChannel().equals(Channel.email)){
                 response = sendNotificationEmail(notification);
         } else if(notification.getChannel().equals(Channel.whatsapp)){
@@ -65,7 +65,7 @@ public class TwilioService implements TwilioClient {
     }
 
     public String verifyOTP(String identifier, String token) {
-        Twilio.init(accountSId,authToken);
+        intiateTwilioProcess();
 
         VerificationCheck verificationCheck = VerificationCheck.creator(
                             serviceSid)
@@ -78,8 +78,7 @@ public class TwilioService implements TwilioClient {
     }
     public String sendNotificationSMS(String identifier, String message){
 
-        Twilio.init(accountSId, authToken);
-
+        intiateTwilioProcess();
         Message twilioMessage = Message.creator(new PhoneNumber(identifier),
                 new PhoneNumber("+12765826739"), message).create();
 
@@ -87,7 +86,7 @@ public class TwilioService implements TwilioClient {
     }
 
     public String sendWhatsappNotification(String identifier, String message){
-        Twilio.init(accountSId, authToken);
+        intiateTwilioProcess();
         Message twilioMessage = Message.creator(
                         new com.twilio.type.PhoneNumber("whatsapp:"+identifier),
                         new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),
@@ -119,4 +118,14 @@ public class TwilioService implements TwilioClient {
 
         return String.valueOf(response.getStatusCode());
     }
+
+
+    private void intiateTwilioProcess() {
+        Twilio.init(decoder(accountSId),decoder(authToken));
+    }
+
+    private String decoder(String encodedString) {
+        return new String(Base64.getDecoder().decode(encodedString));
+    }
+
 }
