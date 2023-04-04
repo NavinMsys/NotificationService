@@ -11,10 +11,8 @@ import java.io.IOException;
 public class TwoFactorService  implements TwoFactorClient {
     @Override
     public String sendNotification(Notification notification) {
-        System.out.println("2 Factor");
         if(notification.getChannel() == Channel.email || notification.getChannel() == Channel.whatsapp){
 
-            System.out.println("Not a valid Channel");
         }
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -47,7 +45,6 @@ public class TwoFactorService  implements TwoFactorClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(response);
         return response.message();
     }
 
@@ -64,7 +61,6 @@ public class TwoFactorService  implements TwoFactorClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(response);
         return response.message();
     }
 }
