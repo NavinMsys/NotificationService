@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    image: digitalwallet
+    container_name: digitalWallet
+    networks:
+      - digital-wallet-network
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-container
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - digital-wallet-network
+  grafana:
+    image: grafana/grafana
+    user: "$UID:$GID"
+    container_name: grafana-container
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=admin
+    networks:
+      - digital-wallet-network
+networks:
+  digital-wallet-network: {}

@@ -1,12 +1,16 @@
 package com.msys.digitalwallet.notifcation.twofactor;
 
+import com.msys.digitalwallet.notifcation.common.exception.BusinessException;
 import com.msys.digitalwallet.notifcation.enums.Channel;
+import com.msys.digitalwallet.notifcation.enums.ErrorType;
 import com.msys.digitalwallet.notifcation.integration.TwoFactorClient;
 import com.msys.digitalwallet.notifcation.model.Notification;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 
+@Slf4j
 @Service
 public class TwoFactorService  implements TwoFactorClient {
     @Override
@@ -25,8 +29,9 @@ public class TwoFactorService  implements TwoFactorClient {
         Response response;
         try {
             response = client.newCall(request).execute();
+            log.debug("Response Status : {}",response.isSuccessful());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorType.INTERNAL_ERROR,"Unable to verify OTP from 2Factor");
         }
         return response.message();
     }
@@ -42,8 +47,10 @@ public class TwoFactorService  implements TwoFactorClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
+            log.debug("Response Status : {}",response.isSuccessful());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+
+            throw new BusinessException(ErrorType.INTERNAL_ERROR,"Unable to verify OTP from 2Factor");
         }
         return response.message();
     }
@@ -55,11 +62,12 @@ public class TwoFactorService  implements TwoFactorClient {
                 .url("https://2factor.in/API/V1/6ed5ae4e-c6f8-11ed-81b6-0200cd936042/SMS/+919790794687/AUTOGEN/sample")
                 .method("GET",null)
                 .build();
-        Response response = null;
+        Response response;
         try {
             response = client.newCall(request).execute();
+            log.debug("Response Status : {}",response.isSuccessful());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorType.INTERNAL_ERROR,"Unable to verify OTP from 2Factor");
         }
         return response.message();
     }

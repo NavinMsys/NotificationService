@@ -1,5 +1,6 @@
 package com.msys.digitalwallet.notifcation.config;
 
+import com.msys.digitalwallet.notifcation.fake.FakeNotificationService;
 import com.msys.digitalwallet.notifcation.integration.IntegrationClient;
 import com.msys.digitalwallet.notifcation.twilio.TwilioService;
 import com.msys.digitalwallet.notifcation.twofactor.TwoFactorService;
@@ -19,8 +20,10 @@ public class NotificationBeanConfiguration {
     public IntegrationClient twilioClient(){
         if(notificationBean.equals("Twilio"))
             return new TwilioService();
-        else
+        else if(notificationBean.equals("2Factor"))
             return new TwoFactorService();
+        else
+            return new FakeNotificationService();
     }
 
 }
