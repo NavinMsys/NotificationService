@@ -2,6 +2,7 @@ package com.msys.digitalwallet.notifcation.twilio;
 
 
 import com.msys.digitalwallet.notifcation.common.exception.BusinessException;
+import com.msys.digitalwallet.notifcation.config.Twilio;
 import com.msys.digitalwallet.notifcation.enums.Channel;
 import com.msys.digitalwallet.notifcation.enums.ErrorType;
 import com.msys.digitalwallet.notifcation.integration.TwilioClient;
@@ -13,32 +14,23 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
 import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Base64;
 
 @Slf4j
 @Service
 public class TwilioService implements TwilioClient {
 
-    @Value("${twilio.account.sid}")
-    public String accountSId;
-    @Value("${twilio.auth.token}")
-    public String authToken;
 
-    @Value("${twilio.auth.service.sid}")
-    public String serviceSid;
-
-    @Value("${twilio.sendGrid.id}")
-    public String sendGridid;
+    @Autowired
+    Twilio twilio;
 
     public String sendOTP( String identifier, Channel channel ){
 
@@ -46,7 +38,7 @@ public class TwilioService implements TwilioClient {
         Verification verification;
         try{
             verification = Verification.creator(
-                            decoder(serviceSid),
+                            decoder(twilio.getSid()),
                             identifier,
                             channel.name())
                     .create();
@@ -71,7 +63,6 @@ public class TwilioService implements TwilioClient {
             response = sendNotificationSMS(notification.getIdentifier()
                     ,notification.getMessage());
         }
-
         return response;
     }
 
@@ -79,10 +70,9 @@ public class TwilioService implements TwilioClient {
 
         intiateTwilioProcess();
         VerificationCheck verificationCheck;
-
         try{
             verificationCheck = VerificationCheck.creator(
-                            decoder(serviceSid))
+                            decoder(twilio.getSid()))
                     .setTo(identifier)
                     .setCode(token)
                     .create();
@@ -91,7 +81,6 @@ public class TwilioService implements TwilioClient {
             throw new BusinessException(ErrorType.INTERNAL_ERROR
                     ,"Unable to verify OTP from Twilio");
         }
-
         return verificationCheck.getStatus();
 
     }
@@ -109,7 +98,6 @@ public class TwilioService implements TwilioClient {
             throw new BusinessException(ErrorType.INTERNAL_ERROR
                     ,"Unable to send Notification from Twilio");
         }
-
         return twilioMessage.getStatus().name();
     }
 
@@ -125,12 +113,10 @@ public class TwilioService implements TwilioClient {
                     .create();
             log.debug("Twilio sendWhatsappNotification Response Status : {}"
                     ,twilioMessage.getStatus().name());
-
         }catch(Exception e){
             throw new BusinessException(ErrorType.INTERNAL_ERROR
                     ,"Unable to whatsapp send Notification from Twilio");
         }
-
         return twilioMessage.getStatus().name();
     }
 
@@ -141,7 +127,7 @@ public class TwilioService implements TwilioClient {
         Content content = new Content("text/html", notification.getMessage());
         Mail mail = new Mail(from, notification.getSubject(), to, content);
 
-        SendGrid sg = new SendGrid(sendGridid);
+        SendGrid sg = new SendGrid(twilio.getSendGridId());
         Request request = new Request();
         Response response;
         request.setMethod(Method.POST);
@@ -164,10 +150,9 @@ public class TwilioService implements TwilioClient {
         return String.valueOf(response.getStatusCode());
     }
 
-
     private void intiateTwilioProcess() {
         try{
-            Twilio.init(decoder(accountSId),decoder(authToken));
+            com.twilio.Twilio.init(decoder(twilio.accountSid),decoder(twilio.getAuthToken()));
         } catch (Exception e){
             throw new BusinessException(ErrorType.API_ERROR
                     ,"Unable to whatsapp send Notification from Twilio");
