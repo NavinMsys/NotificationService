@@ -122,7 +122,7 @@ public class TwilioService implements TwilioClient {
 
     public String sendNotificationEmail(Notification notification) {
 
-        Email from = new Email("tarunkumar.ks1992@gmail.com");
+        Email from = new Email(twilio.getSenderEmail());
         Email to = new Email(notification.getIdentifier());
         Content content = new Content("text/html", notification.getMessage());
         Mail mail = new Mail(from, notification.getSubject(), to, content);

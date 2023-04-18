@@ -17,4 +17,6 @@ public class Twilio {
 
     public String sendGridId;
 
+    public String senderEmail;
+
 }

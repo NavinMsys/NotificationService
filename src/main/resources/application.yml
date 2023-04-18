@@ -30,6 +30,7 @@ twilio:
     sid: VkE3ODU5M2MyYTM2ZmFiZTMzNzc3ZDYxMjRiM2MyNjk1NA==
     authToken: NDM5MjQ1ZjBmYzdiNDRhYjQ1MjM2NTY1ODI0NGQ3ZWM=
     accountSid: QUNhMjM4YTliNWQ2YjA1NDUxMTJmNzk5YjlmOWM1ZTdhOA==
+    senderEmail: tarunkumar.ks1992@gmail.com
 notification:
   integration:
     serviceName: FAKE
