@@ -127,7 +127,7 @@ public class TwilioService implements TwilioClient {
         Content content = new Content("text/html", notification.getMessage());
         Mail mail = new Mail(from, notification.getSubject(), to, content);
 
-        SendGrid sg = new SendGrid(twilio.getSendGridId());
+        SendGrid sg = new SendGrid(decoder(twilio.getSendGridId()));
         Request request = new Request();
         Response response;
         request.setMethod(Method.POST);

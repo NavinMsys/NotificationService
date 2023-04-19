@@ -15,7 +15,10 @@ public class FakeNotificationService implements FakeClient {
     public String sendNotification(Notification notification) {
 
         log.debug("Sending fake response for sendNotification: QUEUED");
-        return "QUEUED";
+        if(notification.getChannel()==Channel.email){
+            return "202";
+        }
+        return "PENDING";
     }
 
     @Override
