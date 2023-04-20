@@ -31,4 +31,4 @@ scrape_configs:
     metrics_path: '/actuator/prometheus' # Job to scrape application metrics
     scrape_interval: 5s
     static_configs:
-      - targets: ['digitalWallet:8080']
+      - targets: ['notification-service:8080']

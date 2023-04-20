@@ -1,13 +1,13 @@
 version: '3.8'
 services:
-  app:
+  notification-service:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    image: digitalwallet
-    container_name: digitalWallet
+    image: notification-service
+    container_name: notification-service
     networks:
       - digital-wallet-network
   prometheus:
@@ -27,7 +27,7 @@ services:
     user: "$UID:$GID"
     container_name: grafana-container
     ports:
-      - "3000:3000"
+      - "3003:3000"
     volumes:
       - ./grafana/:/var/lib/grafana
     environment:
