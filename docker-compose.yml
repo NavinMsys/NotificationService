@@ -10,6 +10,16 @@ services:
     container_name: notification-service
     networks:
       - digital-wallet-network
+    environment:
+      - OTEL_SERVICE_NAME=notification-service
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250:14250"
   prometheus:
     image: prom/prometheus
     container_name: prometheus-container
