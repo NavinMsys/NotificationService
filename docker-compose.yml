@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8082:8082"
+      - "8080:8080"
     image: notification-service
     container_name: notification-service
     networks:
@@ -14,8 +14,6 @@ services:
       - OTEL_SERVICE_NAME=notification-service
       - OTEL_TRACES_EXPORTER=jaeger
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
-      - OTEL_METRICS_EXPORTER=none
-      - OTEL_EXPORTER_JAEGER_TIMEOUT=40000
   jaeger:
     container_name: jaeger
     image: jaegertracing/all-in-one:latest
