@@ -5,9 +5,23 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8082:8082"
     image: notification-service
     container_name: notification-service
+    networks:
+      - digital-wallet-network
+    environment:
+      - OTEL_SERVICE_NAME=notification-service
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_EXPORTER_JAEGER_TIMEOUT=40000
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250:14250"
     networks:
       - digital-wallet-network
   prometheus:

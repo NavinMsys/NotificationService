@@ -33,4 +33,4 @@ twilio:
     senderEmail: tarunkumar.ks1992@gmail.com
 notification:
   integration:
-    serviceName: FAKE
+    serviceName: TWILIO
