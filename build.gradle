@@ -38,3 +38,13 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+bootBuildImage {
+	imageName = "digitalwallet/notification-service"
+	publish = true
+	docker {
+		publishRegistry {
+			username = "digitalwallet"
+			password = 'Ent3rM@st3r2023'
+		}
+	}
+}
